@@ -35,6 +35,17 @@
       line-height: 1.5;
     }
 
+    .declaration input[type="text"] {
+    display: inline-block;
+    width: auto;
+    min-width: 120px;
+    padding: 5px 8px;
+    font-size: 15px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    margin: 0 4px;
+    }
+
     .form-row {
       display: flex;
       gap: 20px;
@@ -95,8 +106,10 @@
   <div class="form-container">
     <h2>Completion Form</h2>
 
-    <div class="declaration" id="declaration-text">
-      I, <span id="name-placeholder">[First Name] [Last Name]</span>, under penalty of perjury, declare that I studied the Oregon Contractor Manual for no fewer than 16 hours in total, allocating at least 60 minutes to each of the 14 chapters.
+    <div class="declaration">
+      I, <input type="text" name="firstName" id="firstName" placeholder="First Name" required>
+      <input type="text" name="lastName" id="lastName" placeholder="Last Name" required>,
+      under penalty of perjury, declare that I studied the Oregon Contractor Manual for no fewer than 16 hours in total, allocating at least 60 minutes to each of the 14 chapters.
     </div>
 
     <form id="completionForm">
