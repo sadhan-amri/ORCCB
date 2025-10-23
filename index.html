@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Completion Form</title>
+  <script src="https://cdn.jsdelivr.net/npm/signature_pad@4.1.5/dist/signature_pad.umd.min.js"></script>
+  <style>
+    body { font-family: Arial; padding: 20px; max-width: 600px; margin: auto; }
+    label { display: block; margin-top: 10px; }
+    canvas { border: 1px solid #ccc; width: 100%; height: 150px; }
+    button { margin-top: 15px; padding: 10px 20px; }
+  </style>
+</head>
+<body>
+  <h2>Completion Form</h2>
+  <p>I declare under penalty of perjury that I studied the Oregon Contractor Manual for no fewer than 16 hours...</p>
+
+  <form id="completionForm">
+    <label>First Name: <input type="text" name="firstName" required></label>
+    <label>Last Name: <input type="text" name="lastName" required></label>
+    <label>Email: <input type="email" name="email" required></label>
+    <label>Confirm Email: <input type="email" name="confirmEmail" required></label>
+    <label>Final Exam Language:
+      <select name="language" required>
+        <option value="English">English</option>
+        <option value="Spanish">Spanish</option>
+      </select>
+    </label>
+    <label>Photo ID Number: <input type="number" name="idNumber" required></label>
+    <p>Signature (use mouse or finger):</p>
+    <canvas id="signature-pad"></canvas>
+    <button type="button" id="clear">Clear Signature</button>
+    <label>Date: <input type="date" name="date" required></label>
+    <button type="submit">Submit</button>
+  </form>
+
+  <script>
+    const canvas = document.getElementById('signature-pad');
+    const signaturePad = new SignaturePad(canvas);
+    document.getElementById('clear').addEventListener('click', () => signaturePad.clear());
+
+    document.getElementById('completionForm').addEventListener('submit', function(e) {
+      e.preventDefault();
+
+      const data = new FormData(this);
+      const payload = {
+        firstName: data.get('firstName'),
+        lastName: data.get('lastName'),
+        email: data.get('email'),
+        confirmEmail: data.get('confirmEmail'),
+        language: data.get('language'),
+        idNumber: data.get('idNumber'),
+        date: data.get('date'),
+        signature: signaturePad.isEmpty() ? "" : signaturePad.toDataURL()
+      };
+
+      if (payload.email !== payload.confirmEmail) {
+        alert("Emails do not match!");
+        return;
+      }
+
+      fetch("YOUR_WEB_APP_URL_HERE", {
+        method: "POST",
+        body: JSON.stringify(payload),
+        headers: { "Content-Type": "application/json" }
+      })
+      .then(res => res.text())
+      .then(msg => {
+        alert("Form submitted successfully!");
+        document.getElementById('completionForm').reset();
+        signaturePad.clear();
+      })
+      .catch(err => alert("Error: " + err));
+    });
+  </script>
+</body>
+</html>
