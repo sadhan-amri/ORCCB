@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Completion Form</title>
+  <title>Oregon Contractor Completion Form</title>
   <script src="https://cdn.jsdelivr.net/npm/signature_pad@4.1.5/dist/signature_pad.umd.min.js"></script>
   <style>
     body {
@@ -31,7 +31,8 @@
       padding: 15px;
       border-left: 4px solid #007bff;
       margin-bottom: 20px;
-      font-size: 14px;
+      font-size: 15px;
+      line-height: 1.5;
     }
 
     label {
@@ -83,8 +84,8 @@
   <div class="form-container">
     <h2>Completion Form</h2>
 
-    <div class="declaration">
-      I declare under penalty of perjury that I studied the Oregon Contractor Manual for no fewer than 16 hours in total, allocating at least 60 minutes to each of the 14 chapters.
+    <div class="declaration" id="declaration-text">
+      I, <span id="name-placeholder">[First Name] [Last Name]</span>, under penalty of perjury, declare that I studied the Oregon Contractor Manual for no fewer than 16 hours in total, allocating at least 60 minutes to each of the 14 chapters.
     </div>
 
     <form id="completionForm">
@@ -112,6 +113,19 @@
   </div>
 
   <script>
+    const firstNameInput = document.querySelector('input[name="firstName"]');
+    const lastNameInput = document.querySelector('input[name="lastName"]');
+    const namePlaceholder = document.getElementById('name-placeholder');
+
+    function updateDeclarationName() {
+      const first = firstNameInput.value.trim();
+      const last = lastNameInput.value.trim();
+      namePlaceholder.textContent = (first || last) ? `${first} ${last}` : "[First Name] [Last Name]";
+    }
+
+    firstNameInput.addEventListener('input', updateDeclarationName);
+    lastNameInput.addEventListener('input', updateDeclarationName);
+
     const canvas = document.getElementById('signature-pad');
     const signaturePad = new SignaturePad(canvas);
     document.getElementById('clear').addEventListener('click', () => signaturePad.clear());
@@ -149,6 +163,7 @@
         alert("Form submitted successfully!");
         document.getElementById('completionForm').reset();
         signaturePad.clear();
+        namePlaceholder.textContent = "[First Name] [Last Name]";
       })
       .catch(err => {
         console.error("Submission error:", err);
