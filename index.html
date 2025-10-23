@@ -1,37 +1,115 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
+  <meta charset="UTF-8">
   <title>Completion Form</title>
   <script src="https://cdn.jsdelivr.net/npm/signature_pad@4.1.5/dist/signature_pad.umd.min.js"></script>
   <style>
-    body { font-family: Arial; padding: 20px; max-width: 600px; margin: auto; }
-    label { display: block; margin-top: 10px; }
-    canvas { border: 1px solid #ccc; width: 100%; height: 150px; }
-    button { margin-top: 15px; padding: 10px 20px; }
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f9f9f9;
+      margin: 0;
+      padding: 40px;
+    }
+
+    .form-container {
+      background: white;
+      padding: 30px;
+      max-width: 600px;
+      margin: auto;
+      border-radius: 8px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+    }
+
+    h2 {
+      text-align: center;
+      margin-bottom: 20px;
+    }
+
+    .declaration {
+      background-color: #eef6ff;
+      padding: 15px;
+      border-left: 4px solid #007bff;
+      margin-bottom: 20px;
+      font-size: 14px;
+    }
+
+    label {
+      display: block;
+      margin-top: 15px;
+      font-weight: bold;
+    }
+
+    input, select {
+      width: 100%;
+      padding: 10px;
+      margin-top: 5px;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+    }
+
+    canvas {
+      border: 1px solid #ccc;
+      width: 100%;
+      height: 150px;
+      margin-top: 10px;
+    }
+
+    .signature-actions {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-top: 10px;
+    }
+
+    .submit-button {
+      background-color: #28a745;
+      color: white;
+      border: none;
+      padding: 15px;
+      width: 100%;
+      font-size: 16px;
+      border-radius: 4px;
+      margin-top: 30px;
+      cursor: pointer;
+    }
+
+    .submit-button:hover {
+      background-color: #218838;
+    }
   </style>
 </head>
 <body>
-  <h2>Completion Form</h2>
-  <p>I declare under penalty of perjury that I studied the Oregon Contractor Manual for no fewer than 16 hours in total, allocating at least 60 minutes to each of the 14 chapters.</p>
+  <div class="form-container">
+    <h2>Completion Form</h2>
 
-  <form id="completionForm">
-    <label>First Name: <input type="text" name="firstName" required></label>
-    <label>Last Name: <input type="text" name="lastName" required></label>
-    <label>Email: <input type="email" name="email" required></label>
-    <label>Confirm Email: <input type="email" name="confirmEmail" required></label>
-    <label>Final Exam Language:
-      <select name="language" required>
-        <option value="English">English</option>
-        <option value="Spanish">Spanish</option>
-      </select>
-    </label>
-    <label>Photo ID Number: <input type="number" name="idNumber" required></label>
-    <p>Signature (use mouse or finger):</p>
-    <canvas id="signature-pad"></canvas>
-    <button type="button" id="clear">Clear Signature</button>
-    <label>Date: <input type="date" name="date" required></label>
-    <button type="submit">Submit</button>
-  </form>
+    <div class="declaration">
+      I declare under penalty of perjury that I studied the Oregon Contractor Manual for no fewer than 16 hours in total, allocating at least 60 minutes to each of the 14 chapters.
+    </div>
+
+    <form id="completionForm">
+      <label>First Name: <input type="text" name="firstName" required></label>
+      <label>Last Name: <input type="text" name="lastName" required></label>
+      <label>Email: <input type="email" name="email" required></label>
+      <label>Confirm Email: <input type="email" name="confirmEmail" required></label>
+      <label>Final Exam Language:
+        <select name="language" required>
+          <option value="English">English</option>
+          <option value="Spanish">Spanish</option>
+        </select>
+      </label>
+      <label>Photo ID Number (numbers only): <input type="number" name="idNumber" required></label>
+
+      <label>Signature (use mouse or finger):</label>
+      <canvas id="signature-pad"></canvas>
+      <div class="signature-actions">
+        <button type="button" id="clear">Clear Signature</button>
+        <label>Date: <input type="date" name="date" required></label>
+      </div>
+
+      <button type="submit" class="submit-button">Submit</button>
+    </form>
+  </div>
 
   <script>
     const canvas = document.getElementById('signature-pad');
@@ -58,18 +136,24 @@
         return;
       }
 
-      fetch("https://script.google.com/macros/s/AKfycbxUcZcZlWh-ZyYavictlhbbg3G3NoSCWhi_S6Q7avfKIzpd3U2R59U2ebPt9lOlRNA6/exec", {
+      fetch("YOUR_WEB_APP_URL_HERE", {
         method: "POST",
-        body: JSON.stringify(payload),
-        headers: { "Content-Type": "application/json" }
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload)
       })
-      .then(res => res.text())
+      .then(res => {
+        if (!res.ok) throw new Error("Network response was not ok");
+        return res.text();
+      })
       .then(msg => {
         alert("Form submitted successfully!");
         document.getElementById('completionForm').reset();
         signaturePad.clear();
       })
-      .catch(err => alert("Error: " + err));
+      .catch(err => {
+        console.error("Submission error:", err);
+        alert("Error submitting form: " + err.message);
+      });
     });
   </script>
 </body>
