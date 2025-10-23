@@ -15,7 +15,7 @@
     .form-container {
       background: white;
       padding: 30px;
-      max-width: 600px;
+      max-width: 700px;
       margin: auto;
       border-radius: 8px;
       box-shadow: 0 0 10px rgba(0,0,0,0.1);
@@ -35,25 +35,36 @@
       line-height: 1.5;
     }
 
-    label {
-      display: block;
+    .form-row {
+      display: flex;
+      gap: 20px;
       margin-top: 15px;
+    }
+
+    .form-group {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+    }
+
+    label {
       font-weight: bold;
+      margin-bottom: 5px;
     }
 
     input, select {
-      width: 100%;
       padding: 10px;
-      margin-top: 5px;
       border: 1px solid #ccc;
       border-radius: 4px;
     }
 
     canvas {
-      border: 1px solid #ccc;
-      width: 100%;
-      height: 150px;
+      border: 2px dashed #999;
+      background-color: #fff;
+      box-shadow: inset 0 0 5px rgba(0,0,0,0.1);
       margin-top: 10px;
+      width: 100%;
+      height: 200px;
     }
 
     .signature-actions {
@@ -85,28 +96,51 @@
     <h2>Completion Form</h2>
 
     <div class="declaration" id="declaration-text">
-           </div>
+      I, <span id="name-placeholder">[First Name] [Last Name]</span>, under penalty of perjury, declare that I studied the Oregon Contractor Manual for no fewer than 16 hours in total, allocating at least 60 minutes to each of the 14 chapters.
+    </div>
 
     <form id="completionForm">
-      I, <label>First Name: <input type="text" name="firstName" required></label>
-      <label>Last Name: <input type="text" name="lastName" required></label>
-under penalty of perjury, declare that I studied the Oregon Contractor Manual for no fewer than 16 hours in total, allocating at least 60 minutes to each of the 14 chapters.
+      <div class="form-row">
+        <div class="form-group">
+          <label for="firstName">First Name:</label>
+          <input type="text" name="firstName" id="firstName" required>
+        </div>
+        <div class="form-group">
+          <label for="lastName">Last Name:</label>
+          <input type="text" name="lastName" id="lastName" required>
+        </div>
+      </div>
 
-      <label>Email: <input type="email" name="email" required></label>
-      <label>Confirm Email: <input type="email" name="confirmEmail" required></label>
-      <label>Final Exam Language:
-        <select name="language" required>
-          <option value="English">English</option>
-          <option value="Spanish">Spanish</option>
-        </select>
-      </label>
-      <label>Photo ID Number (numbers only): <input type="number" name="idNumber" required></label>
+      <div class="form-row">
+        <div class="form-group">
+          <label for="email">Email:</label>
+          <input type="email" name="email" id="email" required>
+        </div>
+        <div class="form-group">
+          <label for="confirmEmail">Confirm Email:</label>
+          <input type="email" name="confirmEmail" id="confirmEmail" required>
+        </div>
+      </div>
+
+      <div class="form-row">
+        <div class="form-group">
+          <label for="language">Final Exam Language:</label>
+          <select name="language" id="language" required>
+            <option value="English">English</option>
+            <option value="Spanish">Spanish</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label for="idNumber">Photo ID Number (numbers only):</label>
+          <input type="number" name="idNumber" id="idNumber" required>
+        </div>
+      </div>
 
       <label>Signature (use mouse or finger):</label>
       <canvas id="signature-pad"></canvas>
       <div class="signature-actions">
         <button type="button" id="clear">Clear Signature</button>
-        <label>Date: <input type="date" name="date" required></label>
+        <label for="date">Date: <input type="date" name="date" id="date" required></label>
       </div>
 
       <button type="submit" class="submit-button">Submit</button>
@@ -114,8 +148,8 @@ under penalty of perjury, declare that I studied the Oregon Contractor Manual fo
   </div>
 
   <script>
-    const firstNameInput = document.querySelector('input[name="firstName"]');
-    const lastNameInput = document.querySelector('input[name="lastName"]');
+    const firstNameInput = document.getElementById('firstName');
+    const lastNameInput = document.getElementById('lastName');
     const namePlaceholder = document.getElementById('name-placeholder');
 
     function updateDeclarationName() {
@@ -128,7 +162,12 @@ under penalty of perjury, declare that I studied the Oregon Contractor Manual fo
     lastNameInput.addEventListener('input', updateDeclarationName);
 
     const canvas = document.getElementById('signature-pad');
-    const signaturePad = new SignaturePad(canvas);
+    const signaturePad = new SignaturePad(canvas, {
+      minWidth: 1,
+      maxWidth: 2.5,
+      penColor: "black"
+    });
+
     document.getElementById('clear').addEventListener('click', () => signaturePad.clear());
 
     document.getElementById('completionForm').addEventListener('submit', function(e) {
@@ -151,7 +190,7 @@ under penalty of perjury, declare that I studied the Oregon Contractor Manual fo
         return;
       }
 
-      fetch("https://script.google.com/macros/s/AKfycbx9nPMHkOvurjLadl5SB0wEiEAfYvtCmkuueuqMnO4nQTgP5ksKQmJSHfhgQT5g1d9-/exec", {
+      fetch("YOUR_WEB_APP_URL_HERE", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(payload)
