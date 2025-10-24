@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <title>Oregon Contractor Completion Form</title>
-    <script src="https://unpkg.com/signature_pad@4.1.5/dist/signature_pad.umd.min.js"></script>  
+  <script src="https://unpkg.com/signature_pad@4.1.5/dist/signature_pad.umd.min.js"></script>
   <style>
     body {
       font-family: Arial, sans-serif;
@@ -15,7 +15,7 @@
     .form-container {
       background: white;
       padding: 30px;
-      max-width: 700px;
+      max-width: 900px;   /* wider form */
       margin: auto;
       border-radius: 8px;
       box-shadow: 0 0 10px rgba(0,0,0,0.1);
@@ -24,6 +24,7 @@
     h2 {
       text-align: center;
       margin-bottom: 20px;
+      font-size: 18px;   /* uniform with declaration */
     }
 
     .declaration {
@@ -31,19 +32,19 @@
       padding: 15px;
       border-left: 4px solid #007bff;
       margin-bottom: 20px;
-      font-size: 15px;
+      font-size: 18px;   /* match headers */
       line-height: 1.5;
     }
 
     .declaration input[type="text"] {
-    display: inline-block;
-    width: auto;
-    min-width: 120px;
-    padding: 5px 8px;
-    font-size: 15px;
-    border: 1px solid #ccc;
-    border-radius: 4px;
-    margin: 0 4px;
+      display: inline-block;
+      width: auto;
+      min-width: 120px;
+      padding: 5px 8px;
+      font-size: 16px;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+      margin: 0 4px;
     }
 
     .form-row {
@@ -86,7 +87,7 @@
     }
 
     .submit-button {
-      background-color: #28a745;
+      background-color: #aac934;  /* new green */
       color: white;
       border: none;
       padding: 15px;
@@ -98,7 +99,7 @@
     }
 
     .submit-button:hover {
-      background-color: #218838;
+      background-color: #94ad2c; /* slightly darker hover */
     }
   </style>
 </head>
@@ -107,23 +108,13 @@
     <h2>Completion Form</h2>
 
     <div class="declaration">
-      I, <input type="text" name="firstName" id="firstName" placeholder="First Name" required>
+      I, 
+      <input type="text" name="firstName" id="firstName" placeholder="First Name" required>
       <input type="text" name="lastName" id="lastName" placeholder="Last Name" required>,
       under penalty of perjury, declare that I studied the Oregon Contractor Manual for no fewer than 16 hours in total, allocating at least 60 minutes to each of the 14 chapters.
     </div>
 
     <form id="completionForm">
-      <div class="form-row">
-        <div class="form-group">
-          <label for="firstName">First Name:</label>
-          <input type="text" name="firstName" id="firstName" required>
-        </div>
-        <div class="form-group">
-          <label for="lastName">Last Name:</label>
-          <input type="text" name="lastName" id="lastName" required>
-        </div>
-      </div>
-
       <div class="form-row">
         <div class="form-group">
           <label for="email">Email:</label>
@@ -161,83 +152,63 @@
   </div>
 
   <script>
-    const firstNameInput = document.getElementById('firstName');
-    const lastNameInput = document.getElementById('lastName');
-    const namePlaceholder = document.getElementById('name-placeholder');
-
-    function updateDeclarationName() {
-      const first = firstNameInput.value.trim();
-      const last = lastNameInput.value.trim();
-      namePlaceholder.textContent = (first || last) ? `${first} ${last}` : "[First Name] [Last Name]";
-    }
-
-    firstNameInput.addEventListener('input', updateDeclarationName);
-    lastNameInput.addEventListener('input', updateDeclarationName);
-
     const canvas = document.getElementById('signature-pad');
-      canvas.width = canvas.offsetWidth;
-      canvas.height = 200;
+    canvas.width = canvas.offsetWidth;
+    canvas.height = 200;
 
     const signaturePad = new SignaturePad(canvas, {
       minWidth: 1,
       maxWidth: 2.5,
-      penColor: "black"  
-    });
-
-    window.addEventListener("resize", () => {
-      canvas.width = canvas.offsetWidth;
-      canvas.height = 200;
-      signaturePad.clear();
+      penColor: "black"
     });
 
     document.getElementById('clear').addEventListener('click', () => signaturePad.clear());
 
-  document.getElementById('completionForm').addEventListener('submit', function(e) {
-  e.preventDefault();
+    document.getElementById('completionForm').addEventListener('submit', function(e) {
+      e.preventDefault();
 
-  // Check if signature is present
-  if (signaturePad.isEmpty()) {
-    alert("Please provide your signature before submitting.");
-    return;
-  }
+      // Require signature
+      if (signaturePad.isEmpty()) {
+        alert("Please provide your signature before submitting.");
+        return;
+      }
 
-  const data = new FormData(this);
-  const payload = {
-    firstName: data.get('firstName'),
-    lastName: data.get('lastName'),
-    email: data.get('email'),
-    confirmEmail: data.get('confirmEmail'),
-    language: data.get('language'),
-    idNumber: data.get('idNumber'),
-    date: data.get('date'),
-    signature: signaturePad.toDataURL()
-  };
+      const data = new FormData(this);
+      const payload = {
+        firstName: data.get('firstName'),
+        lastName: data.get('lastName'),
+        email: data.get('email'),
+        confirmEmail: data.get('confirmEmail'),
+        language: data.get('language'),
+        idNumber: data.get('idNumber'),
+        date: data.get('date'),
+        signature: signaturePad.toDataURL()
+      };
 
-  if (payload.email !== payload.confirmEmail) {
-    alert("Emails do not match!");
-    return;
-  }
+      if (payload.email !== payload.confirmEmail) {
+        alert("Emails do not match!");
+        return;
+      }
 
-  fetch("YOUR_WEB_APP_URL_HERE", {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify(payload)
-  })
-  .then(res => {
-    if (!res.ok) throw new Error("Network response was not ok");
-    return res.text();
-  })
-  .then(msg => {
-    alert("Form submitted successfully!");
-    document.getElementById('completionForm').reset();
-    signaturePad.clear();
-    document.getElementById('name-placeholder').textContent = "[First Name] [Last Name]";
-  })
-  .catch(err => {
-    console.error("Submission error:", err);
-    alert("Error submitting form: " + err.message);
-  });
-});
+      fetch("YOUR_WEB_APP_URL_HERE", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload)
+      })
+      .then(res => {
+        if (!res.ok) throw new Error("Network response was not ok");
+        return res.text();
+      })
+      .then(msg => {
+        alert("Form submitted successfully!");
+        document.getElementById('completionForm').reset();
+        signaturePad.clear();
+      })
+      .catch(err => {
+        console.error("Submission error:", err);
+        alert("Error submitting form: " + err.message);
+      });
+    });
   </script>
 </body>
 </html>
