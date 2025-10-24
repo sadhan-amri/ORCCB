@@ -15,7 +15,7 @@
     .form-container {
       background: white;
       padding: 30px;
-      max-width: 900px;   /* wider form */
+      max-width: 900px;
       margin: auto;
       border-radius: 8px;
       box-shadow: 0 0 10px rgba(0,0,0,0.1);
@@ -24,25 +24,14 @@
     h2 {
       text-align: center;
       margin-bottom: 20px;
-      font-size: 18px;   /* uniform with declaration */
+      font-size: 1.2rem;
     }
 
     .declaration {
       padding: 15px;
       margin-bottom: 20px;
-      font-size: 1.5rem;   /* match headers */
+      font-size: 1rem;
       line-height: 1.5;
-    }
-
-    .declaration input[type="text"] {
-      display: inline-block;
-      width: auto;
-      min-width: 120px;
-      padding: 5px 8px;
-      font-size: 1.5rem;
-      border: 1px solid #ccc;
-      border-radius: 4px;
-      margin: 0 4px;
     }
 
     .form-row {
@@ -57,15 +46,22 @@
       flex-direction: column;
     }
 
-    label {
-      font-weight: bold;
-      margin-bottom: 5px;
-    }
-
     input, select {
       padding: 10px;
       border: 1px solid #ccc;
       border-radius: 4px;
+      font-size: 1rem;
+    }
+
+    input::placeholder {
+      color: #666;
+    }
+
+    .language-options {
+      display: flex;
+      align-items: center;
+      gap: 15px;
+      font-size: 1rem;
     }
 
     canvas {
@@ -85,22 +81,20 @@
     }
 
     .submit-button {
-      background-color: #aac934;  /* new green */
+      background-color: #aac934;
       color: black;
+      font-weight: bold;
       border: none;
       padding: 15px;
       width: 320px;
-      font-weight: bold;
-      border: none;
       border-radius: 8px;
       cursor: pointer;
-      font-size: 16px;
+      font-size: 1rem;
       margin-top: 30px;
-      cursor: pointer;
     }
 
     .submit-button:hover {
-      background-color: #94ad2c; /* slightly darker hover */
+      background-color: #94ad2c;
     }
   </style>
 </head>
@@ -108,46 +102,58 @@
   <div class="form-container">
     <h2>Completion Form</h2>
 
+    <!-- Declaration -->
     <div class="declaration">
       I, 
-      <input type="text" name="firstName" id="firstName" placeholder="First Name" required>
-      <input type="text" name="lastName" id="lastName" placeholder="Last Name" required>,
-      under penalty of perjury, declare that I studied the Oregon Contractor Manual for no fewer than 16 hours in total, allocating at least 60 minutes to each of the 14 chapters.
+      <input type="text" name="firstName" id="firstName" placeholder="First Name *" required>
+      <input type="text" name="lastName" id="lastName" placeholder="Last Name *" required>,
+      under penalty of perjury, declare that I studied the NASCLA Contractors Guide to Business, Law and Project Management, Oregon Construction Contractors, 2nd Edition for no fewer than 16 hours in total, allocating at least 69 minutes to each of the 14 chapters.
     </div>
 
     <form id="completionForm">
+
+      <!-- Row 2: ID, Address, Email -->
       <div class="form-row">
         <div class="form-group">
-          <label for="email">Email:</label>
-          <input type="email" name="email" id="email" required>
+          <input type="text" name="idNumber" id="idNumber" placeholder="Number on your photo ID *" required>
         </div>
         <div class="form-group">
-          <label for="confirmEmail">Confirm Email:</label>
-          <input type="email" name="confirmEmail" id="confirmEmail" required>
+          <input type="text" name="idAddress" id="idAddress" placeholder="Address on your photo ID *" required>
+        </div>
+        <div class="form-group">
+          <input type="email" name="email" id="email" placeholder="Email *" required>
         </div>
       </div>
 
+      <!-- Row 3: Language + Phone -->
       <div class="form-row">
         <div class="form-group">
-          <label for="language">Final Exam Language:</label>
-          <select name="language" id="language" required>
-            <option value="English">English</option>
-            <option value="Spanish">Spanish</option>
-          </select>
+          <label>Final Exam Language:</label>
+          <div class="language-options">
+            <label><input type="checkbox" name="language" value="English"> English</label>
+            <label><input type="checkbox" name="language" value="Spanish"> Spanish</label>
+          </div>
         </div>
         <div class="form-group">
-          <label for="idNumber">Photo ID Number (numbers only):</label>
-          <input type="number" name="idNumber" id="idNumber" required>
+          <input type="tel" name="phone" id="phone" placeholder="Phone Number *" required>
         </div>
       </div>
 
+      <!-- Row 4: Signature -->
       <label>Signature (use mouse or finger):</label>
       <canvas id="signature-pad"></canvas>
       <div class="signature-actions">
         <button type="button" id="clear">Clear Signature</button>
-        <label for="date">Date: <input type="date" name="date" id="date" required></label>
       </div>
 
+      <!-- Row 5: Date -->
+      <div class="form-row">
+        <div class="form-group">
+          <input type="date" name="date" id="date" required>
+        </div>
+      </div>
+
+      <!-- Row 6: Submit -->
       <button type="submit" class="submit-button">Submit</button>
     </form>
   </div>
@@ -168,7 +174,6 @@
     document.getElementById('completionForm').addEventListener('submit', function(e) {
       e.preventDefault();
 
-      // Require signature
       if (signaturePad.isEmpty()) {
         alert("Please provide your signature before submitting.");
         return;
@@ -178,20 +183,16 @@
       const payload = {
         firstName: data.get('firstName'),
         lastName: data.get('lastName'),
-        email: data.get('email'),
-        confirmEmail: data.get('confirmEmail'),
-        language: data.get('language'),
         idNumber: data.get('idNumber'),
+        idAddress: data.get('idAddress'),
+        email: data.get('email'),
+        phone: data.get('phone'),
+        language: data.getAll('language'),
         date: data.get('date'),
         signature: signaturePad.toDataURL()
       };
 
-      if (payload.email !== payload.confirmEmail) {
-        alert("Emails do not match!");
-        return;
-      }
-
-      fetch("YOUR_WEB_APP_URL_HERE", {
+      fetch("https://script.google.com/macros/s/AKfycbxUcZcZlWh-ZyYavictlhbbg3G3NoSCWhi_S6Q7avfKIzpd3U2R59U2ebPt9lOlRNA6/exec", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(payload)
