@@ -36,9 +36,9 @@
 
     .form-row {
       display: flex;
-      gap: 15px;
+      gap: 12px;
       margin-top: 12px;
-      flex-wrap: wrap;
+      align-items: center;
     }
 
     .form-group {
@@ -59,25 +59,18 @@
       color: #666;
     }
 
-    /* Specific widths */
+    /* Inline name inputs */
     #firstName, #lastName {
       width: 12ch;
       display: inline-block;
     }
-    #idNumber {
-      width: 45ch;
-    }
-    #idAddress {
-      width: 45ch;
-    }
-    #email {
-      width: 30ch;
-    }
-    #phone {
-      width: 15ch;
+
+    /* Three inline fields: fit on one line until mobile */
+    #idNumber, #idAddress, #email {
+      width: 26ch;
     }
 
-    /* Final Exam row centered */
+    /* Exam row centered, radios above labels */
     .exam-row {
       display: flex;
       justify-content: center;
@@ -86,20 +79,28 @@
       margin-top: 15px;
       font-size: 0.85rem;
       flex-wrap: wrap;
+      text-align: center;
     }
     .exam-label {
       font-weight: bold;
     }
     .exam-options {
       display: flex;
-      gap: 20px;
-      text-align: center;
+      gap: 24px;
     }
     .exam-options label {
       display: flex;
       flex-direction: column;
       align-items: center;
-      font-size: 0.85rem;
+      gap: 6px; /* radio centered above text */
+    }
+    .exam-options input[type="radio"] {
+      margin: 0 auto;
+    }
+
+    /* Phone visual width 15ch, still limited to 10 chars */
+    #phone {
+      width: 15ch;
     }
 
     /* Date centered, fixed width */
@@ -129,19 +130,18 @@
       cursor: pointer;
       font-size: 0.9rem;
     }
-
     .submit-button:hover {
       background-color: #94ad2c;
     }
 
-    /* Responsive stacking for mobile */
+    /* Mobile: stack and full width for usability */
     @media (max-width: 900px) {
       .form-row, .exam-row {
         flex-direction: column;
         align-items: center;
       }
       #idNumber, #idAddress, #email, #phone {
-        width: 100%; /* full width on mobile */
+        width: 100%;
       }
     }
   </style>
@@ -152,7 +152,7 @@
 
     <!-- Declaration -->
     <div class="declaration">
-      I, 
+      I,
       <input type="text" name="firstName" id="firstName" placeholder="First Name *" required>
       <input type="text" name="lastName" id="lastName" placeholder="Last Name *" required>,
       under penalty of perjury, declare that I studied the NASCLA Contractors Guide to Business, Law and Project Management, Oregon Construction Contractors, 2nd Edition for no fewer than 16 hours in total, allocating at least 69 minutes to each of the 14 chapters.
@@ -160,7 +160,7 @@
 
     <form id="completionForm">
 
-      <!-- Row 2: ID, Address, Email -->
+      <!-- Row: Photo ID Number, Address, Email (three 26ch inputs) -->
       <div class="form-row">
         <div class="form-group">
           <input type="text" name="idNumber" id="idNumber" placeholder="Number on your photo ID *" required>
@@ -173,7 +173,7 @@
         </div>
       </div>
 
-      <!-- Row 3: Final Exam Language + Phone -->
+      <!-- Row: Final Exam Language + Phone (centered, radios above labels) -->
       <div class="exam-row">
         <div class="exam-label">Final Exam Language:</div>
         <div class="exam-options">
@@ -191,12 +191,12 @@
         </div>
       </div>
 
-      <!-- Row 4: Date -->
+      <!-- Date centered -->
       <div class="date-row">
         <input type="date" name="date" id="date" required>
       </div>
 
-      <!-- Row 5: Submit -->
+      <!-- Submit centered -->
       <div class="submit-row">
         <button type="submit" class="submit-button">Submit</button>
       </div>
