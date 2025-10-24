@@ -9,6 +9,7 @@
       background-color: #f9f9f9;
       margin: 0;
       padding: 40px;
+      font-size: 0.85rem; /* smaller base font */
     }
 
     .form-container {
@@ -23,20 +24,20 @@
     h2 {
       text-align: center;
       margin-bottom: 20px;
-      font-size: 1.2rem;
+      font-size: 1rem;
     }
 
     .declaration {
       padding: 15px;
       margin-bottom: 20px;
-      font-size: 1rem;
-      line-height: 1.5;
+      font-size: 0.9rem;
+      line-height: 1.4;
     }
 
     .form-row {
       display: flex;
-      gap: 20px;
-      margin-top: 15px;
+      gap: 15px;
+      margin-top: 12px;
     }
 
     .form-group {
@@ -46,17 +47,23 @@
     }
 
     input, select {
-      padding: 8px;
+      padding: 6px;
       border: 1px solid #ccc;
       border-radius: 4px;
-      font-size: 0.9rem;
+      font-size: 0.85rem;
       width: 100%;
       box-sizing: border-box;
     }
 
     input::placeholder {
-      font-size: 0.85rem;
+      font-size: 0.8rem;
       color: #666;
+    }
+
+    /* First/Last Name inline sizing */
+    #firstName, #lastName {
+      width: 12ch; /* enough for ~12 characters */
+      display: inline-block;
     }
 
     /* Make email column wider on desktop */
@@ -64,11 +71,31 @@
       flex: 2;
     }
 
-    .language-options {
+    /* Final Exam row: 3 columns */
+    .exam-row {
       display: flex;
       align-items: center;
-      gap: 15px;
-      font-size: 0.9rem;
+      gap: 10px;
+      margin-top: 12px;
+      font-size: 0.85rem;
+    }
+    .exam-label {
+      flex: 1;
+      font-weight: bold;
+    }
+    .exam-options {
+      flex: 1;
+      display: flex;
+      gap: 10px;
+    }
+    .exam-phone {
+      flex: 0.8; /* narrower for 10 digits */
+    }
+
+    .submit-row {
+      display: flex;
+      justify-content: center;
+      margin-top: 20px;
     }
 
     .submit-button {
@@ -76,12 +103,10 @@
       color: black;
       font-weight: bold;
       border: none;
-      padding: 15px;
-      width: 320px;
+      padding: 12px 20px;
       border-radius: 8px;
       cursor: pointer;
-      font-size: 1rem;
-      margin-top: 30px;
+      font-size: 0.9rem;
     }
 
     .submit-button:hover {
@@ -90,14 +115,15 @@
 
     /* Responsive stacking for mobile */
     @media (max-width: 900px) {
-      .form-row {
+      .form-row, .exam-row {
         flex-direction: column;
+        align-items: flex-start;
       }
-      .form-row .form-group {
-        flex: 1 1 100%;
+      .exam-options {
+        flex-direction: row;
       }
-      .form-row .form-group:nth-child(3) {
-        flex: 1 1 100%; /* reset email column */
+      .exam-phone {
+        width: 100%;
       }
     }
   </style>
@@ -129,29 +155,27 @@
         </div>
       </div>
 
-      <!-- Row 3: Language + Phone -->
-      <div class="form-row">
-        <div class="form-group">
-          <label>Final Exam Language:</label>
-          <div class="language-options">
-            <label><input type="checkbox" name="language" value="English"> English</label>
-            <label><input type="checkbox" name="language" value="Spanish"> Spanish</label>
-          </div>
+      <!-- Row 3: Final Exam Language + Phone -->
+      <div class="exam-row">
+        <div class="exam-label">Final Exam Language:</div>
+        <div class="exam-options">
+          <label><input type="checkbox" name="language" value="English"> English</label>
+          <label><input type="checkbox" name="language" value="Spanish"> Spanish</label>
         </div>
-        <div class="form-group">
-          <input type="tel" name="phone" id="phone" placeholder="Phone Number *" required>
+        <div class="exam-phone">
+          <input type="tel" name="phone" id="phone" placeholder="Phone Number *" maxlength="10" required>
         </div>
       </div>
 
       <!-- Row 4: Date -->
-      <div class="form-row">
-        <div class="form-group">
-          <input type="date" name="date" id="date" required>
-        </div>
+      <div class="submit-row">
+        <input type="date" name="date" id="date" required>
       </div>
 
       <!-- Row 5: Submit -->
-      <button type="submit" class="submit-button">Submit</button>
+      <div class="submit-row">
+        <button type="submit" class="submit-button">Submit</button>
+      </div>
     </form>
   </div>
 
