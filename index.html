@@ -66,30 +66,53 @@
       display: inline-block;
     }
 
-    /* Make email column wider */
-    .form-row .form-group:nth-child(3) {
-      flex: 2;
+    /* Adjust widths for ID and Email */
+    .id-col {
+      flex: 1.2;
+    }
+    .address-col {
+      flex: 1.5;
+    }
+    .email-col {
+      flex: 2; /* 2/3 width compared to others */
     }
 
-    /* Final Exam row: 3 columns */
+    /* Final Exam row centered */
     .exam-row {
       display: flex;
+      justify-content: center;
       align-items: center;
-      gap: 10px;
-      margin-top: 12px;
+      gap: 20px;
+      margin-top: 15px;
       font-size: 0.85rem;
     }
     .exam-label {
-      flex: 1;
       font-weight: bold;
     }
     .exam-options {
-      flex: 1;
       display: flex;
-      gap: 10px;
+      gap: 20px;
+      text-align: center;
+    }
+    .exam-options label {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      font-size: 0.85rem;
     }
     .exam-phone {
-      flex: 0.8;
+      width: 140px;
+    }
+
+    /* Date centered, fixed width */
+    .date-row {
+      display: flex;
+      justify-content: center;
+      margin-top: 20px;
+    }
+    .date-row input {
+      width: 200px;
+      text-align: center;
     }
 
     .submit-row {
@@ -117,7 +140,7 @@
     @media (max-width: 900px) {
       .form-row, .exam-row {
         flex-direction: column;
-        align-items: flex-start;
+        align-items: center;
       }
       .exam-options {
         flex-direction: row;
@@ -144,13 +167,13 @@
 
       <!-- Row 2: ID, Address, Email -->
       <div class="form-row">
-        <div class="form-group">
+        <div class="form-group id-col">
           <input type="text" name="idNumber" id="idNumber" placeholder="Number on your photo ID *" required>
         </div>
-        <div class="form-group">
+        <div class="form-group address-col">
           <input type="text" name="idAddress" id="idAddress" placeholder="Address on your photo ID *" required>
         </div>
-        <div class="form-group">
+        <div class="form-group email-col">
           <input type="email" name="email" id="email" placeholder="Email *" required>
         </div>
       </div>
@@ -159,8 +182,14 @@
       <div class="exam-row">
         <div class="exam-label">Final Exam Language:</div>
         <div class="exam-options">
-          <label><input type="checkbox" name="language" value="English"> English</label>
-          <label><input type="checkbox" name="language" value="Spanish"> Spanish</label>
+          <label>
+            <input type="radio" name="language" value="English" required>
+            English
+          </label>
+          <label>
+            <input type="radio" name="language" value="Spanish">
+            Spanish
+          </label>
         </div>
         <div class="exam-phone">
           <input type="tel" name="phone" id="phone" placeholder="Phone Number *" maxlength="10" required>
@@ -168,7 +197,7 @@
       </div>
 
       <!-- Row 4: Date -->
-      <div class="submit-row">
+      <div class="date-row">
         <input type="date" name="date" id="date" required>
       </div>
 
@@ -191,7 +220,7 @@
         idAddress: data.get('idAddress'),
         email: data.get('email'),
         phone: data.get('phone'),
-        language: data.getAll('language'),
+        language: data.get('language'),
         date: data.get('date')
       };
 
